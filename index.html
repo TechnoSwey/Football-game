@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Футбольная Карьера - Колесо Удачи</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://sdk.yandex.ru/games/sdk/v1"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-futbol"></i> Футбольная Карьера</h1>
+            <div class="header-info">
+                <div id="game-info">
+                    <span id="player-name">Игрок не создан</span>
+                    <span id="player-age">Возраст: -</span>
+                    <span id="player-position">Позиция: -</span>
+                    <span id="player-nationality">Национальность: -</span>
+                </div>
+                <div id="season-info">
+                    Сезон: <span id="current-season">2024</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Экран создания игрока -->
+            <section id="player-creation-screen" class="screen active">
+                <h2><i class="fas fa-user-plus"></i> Создание футболиста</h2>
+                <div class="creation-form">
+                    <div class="input-group">
+                        <label for="firstName"><i class="fas fa-user"></i> Имя:</label>
+                        <input type="text" id="firstName" placeholder="Лионель" maxlength="20">
+                    </div>
+                    <div class="input-group">
+                        <label for="lastName"><i class="fas fa-user"></i> Фамилия:</label>
+                        <input type="text" id="lastName" placeholder="Месси" maxlength="20">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="position"><i class="fas fa-running"></i> Амплуа:</label>
+                        <select id="position">
+                            <option value="Вратарь">Вратарь (GK)</option>
+                            <option value="Защитник">Защитник (DF)</option>
+                            <option value="Полузащитник">Полузащитник (MF)</option>
+                            <option value="Нападающий">Нападающий (FW)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="nationality"><i class="fas fa-flag"></i> Национальность:</label>
+                        <select id="nationality">
+                            <option value="Аргентина">Аргентина</option>
+                            <option value="Бразилия">Бразилия</option>
+                            <option value="Франция">Франция</option>
+                            <option value="Германия">Германия</option>
+                            <option value="Испания">Испания</option>
+                            <option value="Италия">Италия</option>
+                            <option value="Англия">Англия</option>
+                            <option value="Португалия">Португалия</option>
+                            <option value="Нидерланды">Нидерланды</option>
+                            <option value="Россия">Россия</option>
+                        </select>
+                    </div>
+                    
+                    <button id="createPlayerBtn" class="btn-primary">
+                        <i class="fas fa-play"></i> Начать карьеру
+                    </button>
+                </div>
+            </section>
+
+            <!-- Экран основной игры -->
+            <section id="game-screen" class="screen">
+                <div class="game-header">
+                    <h2 id="current-club">Клуб: Свободный агент</h2>
+                    <div class="career-stats">
+                        <div class="stat"><i class="fas fa-futbol"></i> Голы: <span id="total-goals">0</span></div>
+                        <div class="stat"><i class="fas fa-assistive-listening-systems"></i> Ассисты: <span id="total-assists">0</span></div>
+                        <div class="stat"><i class="fas fa-trophy"></i> Трофеи: <span id="total-trophies">0</span></div>
+                    </div>
+                </div>
+                
+                <div class="game-content">
+                    <div class="wheel-section">
+                        <h3><i class="fas fa-dice"></i> Колесо Удачи - Сезон</h3>
+                        <div class="wheel-container">
+                            <canvas id="fortuneWheel" width="300" height="300"></canvas>
+                            <div class="wheel-center"></div>
+                            <button id="spinWheelBtn" class="btn-spin">
+                                <i class="fas fa-redo"></i> Крутить колесо
+                            </button>
+                        </div>
+                        <div id="wheel-result" class="result-box">
+                            <h4><i class="fas fa-star"></i> Результат сезона</h4>
+                            <p id="result-text">Крутите колесо, чтобы начать сезон!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="events-section">
+                        <h3><i class="fas fa-newspaper"></i> События карьеры</h3>
+                        <div id="events-log" class="events-log">
+                            <div class="event">Добро пожаловать в Футбольную Карьеру!</div>
+                        </div>
+                        
+                        <div class="season-actions">
+                            <button id="nextSeasonBtn" class="btn-secondary">
+                                <i class="fas fa-forward"></i> Следующий сезон
+                            </button>
+                            <button id="retireBtn" class="btn-danger">
+                                <i class="fas fa-door-open"></i> Завершить карьеру
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="career-history">
+                    <h3><i class="fas fa-history"></i> История карьеры</h3>
+                    <table id="career-table">
+                        <thead>
+                            <tr>
+                                <th>Возраст</th>
+                                <th>Клуб</th>
+                                <th>Голы</th>
+                                <th>Ассисты</th>
+                                <th>Трофеи</th>
+                                <th>Событие</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Экран завершения карьеры -->
+            <section id="retirement-screen" class="screen">
+                <div class="retirement-content">
+                    <h2><i class="fas fa-trophy"></i> Карьера завершена!</h2>
+                    <div id="final-stats" class="final-stats">
+                        <h3 id="final-player-name">Игрок</h3>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <h4>Общая статистика</h4>
+                                <p>Голы: <span id="final-goals">0</span></p>
+                                <p>Ассисты: <span id="final-assists">0</span></p>
+                                <p>Сыграно сезонов: <span id="final-seasons">0</span></p>
+                                <p>Клубов: <span id="final-clubs">0</span></p>
+                            </div>
+                            <div class="stat-box">
+                                <h4>Достижения</h4>
+                                <p>Трофеев: <span id="final-trophies">0</span></p>
+                                <p>Лучший сезон: <span id="best-season">-</span></p>
+                                <p>Средние голы/сезон: <span id="avg-goals">0</span></p>
+                            </div>
+                        </div>
+                        <h3>Легенда футбола!</h3>
+                        <button id="newCareerBtn" class="btn-primary">
+                            <i class="fas fa-user-plus"></i> Новая карьера
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Футбольная Карьера | Только УЕФА | Top 20 лиг и их вторые дивизионы</p>
+        </footer>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
