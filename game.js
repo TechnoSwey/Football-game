@@ -1,33 +1,71 @@
-// Инициализация Яндекс SDK
-let yandexSDK;
-try {
-    yandexSDK = YaGames;
-    yandexSDK.init().then(ysdk => {
-        window.ysdk = ysdk;
-        console.log('Yandex SDK initialized');
-        // Включаем рекламу при инициализации
-        setupAds();
-    });
-} catch (e) {
-    console.log('Yandex SDK not available, running in standalone mode');
+async function initYandexSDK() {
+    try {
+        const yaGames = await YaGames.init();
+        window.ysdk = yaGames;
+        
+        // Активируем рекламу (предзагрузка)
+        yaGames.adv.loadFullscreenAdv();
+        
+        // Инициализация лидербордов (если нужно)
+        // yaGames.getLeaderboards();
+        
+        // Сохранение данных в облако
+        yaGames.features.LoadingAPI?.ready();
+        
+        console.log('Yandex Games SDK успешно инициализирован');
+        
+        // Показываем рекламу при первом запуске
+        showAdIfNeeded();
+        
+        return true;
+    } catch (error) {
+        console.log('Запуск без Яндекс SDK:', error);
+        return false;
+    }
 }
 
-// Настройка рекламы
-function setupAds() {
-    if (window.ysdk) {
-        // Инициализация рекламы
+// Функция показа рекламы (усовершенствованная)
+function showAdIfNeeded() {
+    if (!window.ysdk) return;
+    
+    // Проверяем, когда последний раз показывалась реклама
+    const lastAdTime = localStorage.getItem('lastAdTime') || 0;
+    const currentTime = Date.now();
+    
+    // Показываем рекламу раз в 3 минуты (180000 мс)
+    // Или при первом запуске
+    if (currentTime - lastAdTime > 180000 || lastAdTime === 0) {
         window.ysdk.adv.showFullscreenAdv({
             callbacks: {
                 onClose: function(wasShown) {
-                    console.log('Реклама закрыта');
+                    if (wasShown) {
+                        localStorage.setItem('lastAdTime', currentTime);
+                        console.log('Реклама показана и закрыта');
+                    }
                 },
                 onError: function(error) {
-                    console.log('Ошибка рекламы:', error);
+                    console.log('Ошибка при показе рекламы:', error);
                 }
             }
         });
     }
 }
+
+// Инициализация игры при загрузке страницы
+document.addEventListener('DOMContentLoaded', async () => {
+    // Сначала инициализируем Яндекс SDK
+    const sdkInitialized = await initYandexSDK();
+    
+    if (sdkInitialized) {
+        console.log('✅ Игра работает в Яндекс Играх');
+        // Можно добавить Яндекс-специфичные функции
+    } else {
+        console.log('🔧 Игра работает в автономном режиме');
+    }
+    
+    // Затем инициализируем саму игру
+    FootballCareerGame.init();
+});
 
 // Основной объект игры
 const FootballCareerGame = {
